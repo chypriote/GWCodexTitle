@@ -78,7 +78,7 @@ Opt("GUIOnEventMode", True)
 Opt("GUICloseOnESC", False)
 
 Global $Runs = 0
-Global $BotRunning = False
+Global $BOT_RUNNING = False
 Global $BotInitialized = False
 Global $TotalSeconds = 0
 Global $Seconds = 0
@@ -110,38 +110,42 @@ GUISetState(@SW_SHOW)
 
 #Region Loops
 logFile("Ready.")
-While Not $BotRunning
+While Not $BOT_RUNNING
    Sleep(500)
 WEnd
+Global $FIRST_RUN = True
 
-;~ AdlibRegister("TimeUpdater", 1000)
 While 1
-   If Not $BotRunning Then
-;~ 	  AdlibUnRegister("TimeUpdater")
+   If Not $BOT_RUNNING Then
 	  logFile("Bot is paused.")
 	  GUICtrlSetState($StartButton, $GUI_ENABLE)
 	  GUICtrlSetData($StartButton, "Start")
 	  GUICtrlSetOnEvent($StartButton, "GuiButtonHandler")
-	  While Not $BotRunning
-		 Sleep(500)
-	  WEnd
-;~ 	  AdlibRegister("TimeUpdater", 1000)
+      AdlibUnRegister("VerifyConnection")
+      $FIRST_RUN = True
+	  ContinueLoop
    EndIf
+
+    If $FIRST_RUN Then
+        AdlibRegister("VerifyConnection", 5000)
+        $FIRST_RUN = FAlse
+    EndIf
+
    DoJob()
 WEnd
 #EndRegion Loops
 
 #Region Functions
 Func GuiButtonHandler()
-   If $BotRunning Then
+   If $BOT_RUNNING Then
 	  logFile("Will pause after this run.")
 	  GUICtrlSetData($StartButton, "Force Pause")
 	  GUICtrlSetOnEvent($StartButton, "Resign")
 	  ;GUICtrlSetState($StartButton, $GUI_DISABLE)
-	  $BotRunning = False
+	  $BOT_RUNNING = False
    ElseIf $BotInitialized Then
 	  GUICtrlSetData($StartButton, "Pause")
-	  $BotRunning = True
+	  $BOT_RUNNING = True
    Else
 	  logFile("Initializing...")
 	  Local $CharName = GUICtrlRead($CharInput)
@@ -163,7 +167,7 @@ Func GuiButtonHandler()
 	  GUICtrlSetData($CharInput, $charname, $charname)
 	  GUICtrlSetData($StartButton, "Pause")
 	  WinSetTitle($Gui, "", "Codex Tool - " & $charname)
-	  $BotRunning = True
+	  $BOT_RUNNING = True
 	  $BotInitialized = True
 	  SetMaxMemory()
    EndIf
@@ -290,9 +294,6 @@ EndFunc
 
 
 #Region (General)
-
-
-
 Func logFile($msg)
     GUICtrlSetData($StatusLabel, GUICtrlRead($StatusLabel) & "[" & @HOUR & ":" & @MIN & "]" & " " & $msg & @CRLF)
    _GUICtrlEdit_Scroll($StatusLabel, $SB_SCROLLCARET)
@@ -413,13 +414,13 @@ Func RndTravel($aMapID)
 EndFunc
 
 
- Func  Define_map()
+Func  Define_map()
 	Local $lme = getagentbyid(-2)
 	If GetMapLoading() == $INSTANCETYPE_EXPLORABLE Then
 
 
-;~ 		---------Ascalon Arena---------
-;~         If $Define_map Then
+    ;~ 		---------Ascalon Arena---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 8072, -2017) < 400 Then ;Blue
 				logFile("I am blue in Ascalon Arena")
 			    $CAMapid = $Ascalon_Arena
@@ -432,12 +433,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~ 		EndIf
-;~ 		---------Ascalon Arena-----------
+    ;~ 		EndIf
+    ;~ 		---------Ascalon Arena-----------
 
 
-;~ 		---------D'Alessio_Arena---------
-;~         If $Define_map Then
+    ;~ 		---------D'Alessio_Arena---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 4986, -2499) < 400 Then ;Blue
 				logFile("I am blue in D'Alessio Arena")
 			    $CAMapid = $DAlessio_Arena
@@ -450,12 +451,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------D'Alessio_Arena---------
+    ;~         EndIf
+    ;~ 		---------D'Alessio_Arena---------
 
 
-;~ 		---------Fort Koga---------
-;~         If $Define_map Then
+    ;~ 		---------Fort Koga---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 6240, 255) < 400 Then ;Blue
 				logFile("I am blue in Fort Koga")
 			    $CAMapid = $Fort_Koga
@@ -468,12 +469,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Fort Koga---------
+    ;~         EndIf
+    ;~ 		---------Fort Koga---------
 
 
-;~ 		---------Amnoon Arena---------
-;~         If $Define_map Then
+    ;~ 		---------Amnoon Arena---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 3131, 10093) < 400 Then ;Blue
 				logFile("I am blue in Amnoon Arena")
 			    $CAMapid = $Amnoon_Arena
@@ -486,12 +487,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Amnoon Arena---------
+    ;~         EndIf
+    ;~ 		---------Amnoon Arena---------
 
 
-;~ 		---------Shiverpeak Arena---------
-;~         If $Define_map Then
+    ;~ 		---------Shiverpeak Arena---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 9210, 12369) < 400 Then ;Blue
 				logFile("I am blue in Shiverpeak Arena")
 			    $CAMapid = $Shiverpeak_Arena
@@ -504,12 +505,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Shiverpeak Arena---------
+    ;~         EndIf
+    ;~ 		---------Shiverpeak Arena---------
 
 
-;~ 		---------Shing Jea Arena---------
-;~         If $Define_map Then
+    ;~ 		---------Shing Jea Arena---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), -2375, -1583) < 400 Then ;Blue
 				logFile("I am blue in Shing Jea Arena")
 			    $CAMapid = $Shing_Jea_Arena
@@ -522,12 +523,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Shing Jea Arena---------
+    ;~         EndIf
+    ;~ 		---------Shing Jea Arena---------
 
 
-;~ 		---------Petrified Arena---------
-;~         If $Define_map Then
+    ;~ 		---------Petrified Arena---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 1909, 946) < 400 Then ;Blue
 				logFile("I am blue in Petrified Arena")
 			    $CAMapid = $Petrified_Arena
@@ -540,12 +541,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Petrified Arena---------
+    ;~         EndIf
+    ;~ 		---------Petrified Arena---------
 
 
-;~ 		---------Sunspear Arena---------
-;~         If $Define_map Then
+    ;~ 		---------Sunspear Arena---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 436, 2517) < 400 Then ;Blue
 				logFile("I am blue in Sunspear Arena")
 			    $CAMapid = $Sunspear_Arena
@@ -558,12 +559,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Sunspear Arena---------
+    ;~         EndIf
+    ;~ 		---------Sunspear Arena---------
 
 
-;~ 		---------Churranu Island Arena---------
-;~         If $Define_map Then
+    ;~ 		---------Churranu Island Arena---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 4063, -101) < 400 Then ;Blue
 				logFile("I am blue in Churranu Island Arena")
 			    $CAMapid = $Churranu_Island_Arena
@@ -576,12 +577,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Churranu Island Arena---------
+    ;~         EndIf
+    ;~ 		---------Churranu Island Arena---------
 
 
-;~ 		---------Heroes Crypt---------
-;~         If $Define_map Then
+    ;~ 		---------Heroes Crypt---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), -3341, -5154) < 400 Then ;Blue
 				logFile("I am blue in Heroes Crypt")
 			    $CAMapid = $Heroes_Crypt
@@ -594,12 +595,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Heroes Crypt---------
+    ;~         EndIf
+    ;~ 		---------Heroes Crypt---------
 
 
-;~ 		---------Brawlers Pit---------
-;~         If $Define_map Then
+    ;~ 		---------Brawlers Pit---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 1093, 5074) < 400 Then ;Blue
 				logFile("I am blue in Brawlers Pit")
 			    $CAMapid = $Brawlers_Pit
@@ -612,12 +613,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Brawlers Pit---------
+    ;~         EndIf
+    ;~ 		---------Brawlers Pit---------
 
 
-;~ 		---------Seabed Arena---------
-;~         If $Define_map Then
+    ;~ 		---------Seabed Arena---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 9852, 4274) < 400 Then ;Blue
 				logFile("I am blue in Seabed Arena")
 			    $CAMapid = $Seabed_Arena
@@ -630,12 +631,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Seabed Arena---------
+    ;~         EndIf
+    ;~ 		---------Seabed Arena---------
 
 
-;      ---------Deldrimor Arena---------
-;~         If $Define_map Then
+    ;      ---------Deldrimor Arena---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), -9219, 2700) < 400 Then ;Blue
 				logFile("I am blue in Deldrimor Arena")
 			    $CAMapid = $Deldrimor_Arena
@@ -648,12 +649,12 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------Deldrimor Arena---------
+    ;~         EndIf
+    ;~ 		---------Deldrimor Arena---------
 
 
-;~ 		---------The Crag---------
-;~         If $Define_map Then
+    ;~ 		---------The Crag---------
+    ;~         If $Define_map Then
 		    If computedistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 6559, 4454) < 400 Then ;Blue
 				logFile("I am blue in The Crag")
 			    $CAMapid = $The_Crag
@@ -666,8 +667,8 @@ EndFunc
 				$Won = GetCodexTitle()
 				$Define_map = False
 		    EndIf
-;~         EndIf
-;~ 		---------The Crag---------
+    ;~         EndIf
+    ;~ 		---------The Crag---------
     EndIf
  EndFunc ;==>Define_map
 
@@ -765,4 +766,8 @@ Func ZaishenQuest()
 		EndIf
 	EndIf
 EndFunc
- #EndRegion
+#EndRegion
+
+Func VerifyConnection()
+    If GetMapLoading() == 2 Then Disconnected()
+EndFunc ;VerifyConneciton
