@@ -771,3 +771,31 @@ EndFunc
 Func VerifyConnection()
     If GetMapLoading() == 2 Then Disconnected()
 EndFunc ;VerifyConneciton
+
+Func Disconnected()
+	logFile("Disconnected!")
+	logFile("Attempting to reconnect.")
+	ControlSend(GETWINDOWHANDLE(), "", "", "{Enter}")
+	Local $LCHECK = False
+	Local $LDEADLOCK = TimerInit()
+	Do
+		Sleep(20)
+		$LCHECK = GETMAPLOADING() <> 2 And GETAGENTEXISTS(-2)
+	Until $LCHECK Or TimerDiff($LDEADLOCK) > 60000
+	If $LCHECK = False Then
+		logFile("Failed to Reconnect!")
+		logFile("Retrying.")
+		ControlSend(GETWINDOWHANDLE(), "", "", "{Enter}")
+		$LDEADLOCK = TimerInit()
+		Do
+			Sleep(20)
+			$LCHECK = GETMAPLOADING() <> 2 And GETAGENTEXISTS(-2)
+		Until $LCHECK Or TimerDiff($LDEADLOCK) > 60000
+		If $LCHECK = False Then
+			logFile("Could not reconnect!")
+			logFile("Exiting.")
+		EndIf
+	EndIf
+	logFile("Reconnected!")
+	Sleep(5000)
+ EndFunc
