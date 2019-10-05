@@ -3940,7 +3940,7 @@ Func SetEvent($aSkillActivate = '', $aSkillCancel = '', $aSkillComplete = '', $a
 EndFunc   ;==>SetEvent
 
 ;~ Description: Internal use for event system.
-;~ modified by gigi, avoid getagentbyid, just pass agent id to callback
+;~ modified by gigi, avoid GetAgentByID, just pass agent id to callback
 Func Event($hwnd, $msg, $wparam, $lparam)
 	Switch $lparam
 		Case 0x1

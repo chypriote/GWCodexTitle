@@ -1,33 +1,24 @@
-#include <ButtonConstants.au3>
+;#include <ButtonConstants.au3>
 #include <GWA2.au3>
 #include <ComboConstants.au3>
 #include <GUIConstantsEx.au3>
-#include <StaticConstants.au3>
-#include <WindowsConstants.au3>
+;#include <StaticConstants.au3>
+;#include <WindowsConstants.au3>
 #include <ScrollBarsConstants.au3>
-#include <Misc.au3>
-#include <EditConstants.au3>
+;#include <Misc.au3>
+;#include <EditConstants.au3>
 #include <GuiEdit.au3>
 #include "GWA2_Headers.au3"
+#include "Map.au3"
 #NoTrayIcon
+
+;TODO: disable start if main/leecher not selected
+; turn main/leecher to radio
+; disable zkey/zquest for leecher
 
 #Region Constants
 Global $CODEX_ARENA = 796
 Global $CURRENT_MAP
-Global $The_Crag = 14
-Global $Deldrimor_Arena = 13
-Global $Seabed_Arena = 12
-Global $Brawlers_Pit = 11
-Global $Heroes_Crypt = 10
-Global $Churranu_Island_Arena = 9
-Global $Sunspear_Arena = 8
-Global $Petrified_Arena = 7
-Global $Shing_Jea_Arena = 6
-Global $Shiverpeak_Arena = 5
-Global $Amnoon_Arena = 4
-Global $Fort_Koga = 3
-Global $DAlessio_Arena = 2
-Global $Ascalon_Arena = 1
 Global Enum $INSTANCETYPE_OUTPOST, $INSTANCETYPE_EXPLORABLE, $INSTANCETYPE_LOADING
 #EndRegion Constants
 
@@ -95,9 +86,9 @@ While 1
         $FIRST_RUN = False
     EndIf
 
-	If GUICtrlRead($Leecher) == $GUI_CHECKED Then Return LeecherRole()
-	If GUICtrlRead($Farmer) == $GUI_CHECKED Then Return FarmerRole()
-	If GUICtrlRead($ZKey) == $GUI_CHECKED Then Return TradeKey()
+	If GUICtrlRead($Leecher) == $GUI_CHECKED Then LeecherRole()
+	If GUICtrlRead($Farmer) == $GUI_CHECKED Then FarmerRole()
+	If GUICtrlRead($ZKey) == $GUI_CHECKED Then TradeKey()
 WEnd
 #EndRegion Loops
 
@@ -113,7 +104,6 @@ Func GUIButtonHandler()
 	  $BOT_RUNNING = True
    Else
 	  Out("Initializing...")
-	  Out("Current points: " & GetCodexTitle())
 	  Local $CharName = GUICtrlRead($CharInput)
 	  If $CharName == "" Then
 		 If Initialize(ProcessExists("gw.exe"), True, True) = False Then
@@ -155,16 +145,6 @@ Func LeecherRole()
 	Suicide()
 EndFunc ;LeecherRole
 
-Func AddHench()
-	Out("Adding Hench")
-	AddNpc(1)
-	RndSleep(300)
-	AddNpc(2)
-	RndSleep(300)
-	AddNpc(4)
-	RndSleep(300)
-EndFunc ;AddHench
-
 Func Suicide()
 	Out("Let's Die")
 	Do
@@ -175,6 +155,7 @@ EndFunc ;Suicide
 
 #Region Main
 Func FarmerRole()
+	Out("Current points: " & GetCodexTitle())
 	TravelTo($CODEX_ARENA)
 	ZaishenQuest()
 	AddHench2()
@@ -200,90 +181,33 @@ Func Farm()
 		$agent = GetNearestEnemyToAgent()
 		$distance = GetDistance($agent, -2)
 		If $WON == 0 Then $WON = GetCodexTitle()
-		If $WON == GetCodexTitle() And $distance > 1300 And $distance < 8000  Then
-			If GetMapLoading() == $INSTANCETYPE_EXPLORABLE And GetMapID() == $CODEX_ARENA Then
-				Attack($agent)
-				Out("Looking enemy")
-				ChangeTarget($agent)
-				RndSleep(1000)
-			EndIf
-		EndIf
-		If $WON == GetCodexTitle() And $distance < 1500 Then
-			If GetMapLoading() == $INSTANCETYPE_EXPLORABLE And GetMapID() == $CODEX_ARENA Then
-				KillEnemy()
-			EndIf
-		EndIf
-		If GetNearestEnemyToAgent() = 0 Then
-			If $WON == GetCodexTitle() And GetMapLoading() == $INSTANCETYPE_EXPLORABLE And GetMapID() == $CODEX_ARENA Then
-				Out("looking for enemy")
-				If $WON == GetCodexTitle() And $CURRENT_MAP == $The_Crag Then
-					If $WON == GetCodexTitle() And GetNearestEnemyToAgent() = 0 Then
-						MoveTo(1046, 74)
-					EndIf
-					If $WON == GetCodexTitle() And GetNearestEnemyToAgent() = 0 Then
-						MoveTo(3585, 2023)
-					EndIf
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Deldrimor_Arena Then
-					Moveto(-11687, 5025)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Seabed_Arena Then
-					Move(7944, 6803)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Brawlers_Pit Then
-					Move(3035, 5173)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP ==  $Heroes_Crypt Then
-					Move(-8, -5258)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Churranu_Island_Arena Then
-					Move(1834, -42)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Sunspear_Arena Then
-					Move(2168, 221)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Petrified_Arena Then
-					Move(4529, -1069)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Shing_Jea_Arena Then
-					Move(-13, 776)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Shiverpeak_Arena Then
-					Move(6718, 14307)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Amnoon_Arena Then
-					Move(872, 7728)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Fort_Koga Then
-					Move(3158, -1101)
-					RndSleep(2000)
-				EndIf
-				If $WON == GetCodexTitle() And $CURRENT_MAP == $DAlessio_Arena Then
-					Move(3117, 439)
-					RndSleep(2000)
-				EndIf
-				If  $WON == GetCodexTitle() And $CURRENT_MAP == $Ascalon_Arena Then
-					Move(5598, -4091)
-					RndSleep(2000)
+		Do
+			If $distance > 1300 And $distance < 8000  Then
+				If GetMapLoading() == $INSTANCETYPE_EXPLORABLE And GetMapID() == $CODEX_ARENA Then
+					Attack($agent)
+					Out("Looking enemy")
+					ChangeTarget($agent)
+					RndSleep(1000)
 				EndIf
 			EndIf
-		EndIf
-		If  $WON < GetCodexTitle() Then
-			Out("Victory")
-			WaitMapLoading()
-			DefineMap()
-			Out("Total points earned: " & GetCodexTitle() - $STARTING_POINTS)
-		EndIf
+			If $distance < 1500 Then
+				If GetMapLoading() == $INSTANCETYPE_EXPLORABLE And GetMapID() == $CODEX_ARENA Then
+					KillEnemy()
+				EndIf
+			EndIf
+			If GetNearestEnemyToAgent() = 0 Then
+				If $WON == GetCodexTitle() And GetMapLoading() == $INSTANCETYPE_EXPLORABLE And GetMapID() == $CODEX_ARENA Then
+					Out("looking for enemy")
+					GotoCenter()
+				EndIf
+			EndIf
+
+		Until $WON < GetCodexTitle()
+
+		Out("Victory")
+		WaitMapLoading()
+		DefineMap()
+		Out("Total points earned: " & GetCodexTitle() - $STARTING_POINTS)
 	WEnd
 EndFunc ;Farm
 #EndRegion ;Main
@@ -313,226 +237,6 @@ Func _exit()
 	EndIf
 	Exit
 EndFunc ;_exit
-
-Func DefineMap()
-	Local $lme = getagentbyid(-2)
-	If GetMapLoading() == $INSTANCETYPE_EXPLORABLE Then
-
-    ;~ 		---------Ascalon Arena---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 8072, -2017) < 400 Then ;Blue
-			Out("I am blue in Ascalon Arena")
-			$CURRENT_MAP = $Ascalon_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 4815, -6436) < 400 Then ;Red
-			Out("I am red in Ascalon Arena")
-			$CURRENT_MAP = $Ascalon_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------D'Alessio_Arena---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 4986, -2499) < 400 Then ;Blue
-			Out("I am blue in D'Alessio Arena")
-			$CURRENT_MAP = $DAlessio_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 4735, 3830) < 400 Then ;Red
-			Out("I am red in D'Alessio Arena")
-			$CURRENT_MAP = $DAlessio_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------Fort Koga---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 6240, 255) < 400 Then ;Blue
-			Out("I am blue in Fort Koga")
-			$CURRENT_MAP = $Fort_Koga
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 179, -3365) < 400 Then ;Red
-			Out("I am red in Fort Koga")
-			$CURRENT_MAP = $Fort_Koga
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------Amnoon Arena---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 3131, 10093) < 400 Then ;Blue
-			Out("I am blue in Amnoon Arena")
-			$CURRENT_MAP = $Amnoon_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), -1892, 5201) < 400 Then ;Red
-			Out("I am red in Amnoon Arena")
-			$CURRENT_MAP = $Amnoon_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------Shiverpeak Arena---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 9210, 12369) < 400 Then ;Blue
-			Out("I am blue in Shiverpeak Arena")
-			$CURRENT_MAP = $Shiverpeak_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 4379, 16264) < 400 Then ;Red
-			Out("I am red in Shiverpeak Arena")
-			$CURRENT_MAP = $Shiverpeak_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------Shing Jea Arena---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), -2375, -1583) < 400 Then ;Blue
-			Out("I am blue in Shing Jea Arena")
-			$CURRENT_MAP = $Shing_Jea_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 2308, 2879) < 400 Then ;Red
-			Out("I am red in Shing Jea Arena")
-			$CURRENT_MAP = $Shing_Jea_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------Petrified Arena---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 1909, 946) < 400 Then ;Blue
-			Out("I am blue in Petrified Arena")
-			$CURRENT_MAP = $Petrified_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 7188, -3999) < 400 Then ;Red
-			Out("I am red in Petrified Arena")
-			$CURRENT_MAP = $Petrified_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------Sunspear Arena---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 436, 2517) < 400 Then ;Blue
-			Out("I am blue in Sunspear Arena")
-			$CURRENT_MAP = $Sunspear_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 3865, -2254) < 400 Then ;Red
-			Out("I am red in Sunspear Arena")
-			$CURRENT_MAP = $Sunspear_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------Churranu Island Arena---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 4063, -101) < 400 Then ;Blue
-			Out("I am blue in Churranu Island Arena")
-			$CURRENT_MAP = $Churranu_Island_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), -886, -478) < 400 Then ;Red
-			Out("I am red in Churranu Island Arena")
-			$CURRENT_MAP = $Churranu_Island_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------Heroes Crypt---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), -3341, -5154) < 400 Then ;Blue
-			Out("I am blue in Heroes Crypt")
-			$CURRENT_MAP = $Heroes_Crypt
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 3186, -5171) < 400 Then ;Red
-			Out("I am red in Heroes Crypt")
-			$CURRENT_MAP = $Heroes_Crypt
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------Brawlers Pit---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 1093, 5074) < 400 Then ;Blue
-			Out("I am blue in Brawlers Pit")
-			$CURRENT_MAP = $Brawlers_Pit
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 4965, 5070) < 400 Then ;Red
-			Out("I am red in Brawlers Pit")
-			$CURRENT_MAP = $Brawlers_Pit
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-    ;~ 		---------Seabed Arena---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 9852, 4274) < 400 Then ;Blue
-			Out("I am blue in Seabed Arena")
-			$CURRENT_MAP = $Seabed_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 4399, 6730) < 400 Then ;Red
-			Out("I am red in Seabed Arena")
-			$CURRENT_MAP = $Seabed_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-
-    ;      ---------Deldrimor Arena---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), -9219, 2700) < 400 Then ;Blue
-			Out("I am blue in Deldrimor Arena")
-			$CURRENT_MAP = $Deldrimor_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), -8969, 7426) < 400 Then ;Red
-			Out("I am red in Deldrimor Arena")
-			$CURRENT_MAP = $Deldrimor_Arena
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-
-
-    ;~ 		---------The Crag---------
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), 6559, 4454) < 400 Then ;Blue
-			Out("I am blue in The Crag")
-			$CURRENT_MAP = $The_Crag
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-		If ComputeDistance(DllStructGetData($lme, "X"), DllStructGetData($lme, "Y"), -2271, -2317) < 400 Then ;Red
-			Out("I am red in The Crag")
-			$CURRENT_MAP = $The_Crag
-			$WON = GetCodexTitle()
-			$DefineMap = False
-		EndIf
-    EndIf
- EndFunc ;DefineMap
-
- Func KillEnemy()
-	If GetDistance(GetNearestEnemyToAgent(), -2) < 1250 Then
-		For $i = 1 to 7
-			If GetIsDead(GetMyID()) Then ExitLoop
-			If GetMapLoading() == 0 Then ExitLoop
-			$agent = GetNearestEnemyToAgent()
-			Out("Kill Enemes")
-			Attack($agent)
-			RndSleep(300)
-			SkillUseRange($i, $agent)
-			RndSleep(300)
-			ChangeTarget($agent)
-		Next
-	EndIf
-EndFunc ;KillEnemy
 
 Func SkillUseRange($skillnumber, $agent)
 	$distance = GetDistance($agent, -2)
