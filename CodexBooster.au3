@@ -95,9 +95,9 @@ While 1
         $FIRST_RUN = False
     EndIf
 
-	If GUICtrlRead($Leecher) == $GUI_CHECKED Then Return LeecherRole()
-	If GUICtrlRead($Farmer) == $GUI_CHECKED Then Return FarmerRole()
-	If GUICtrlRead($ZKey) == $GUI_CHECKED Then Return TradeKey()
+	If GUICtrlRead($Leecher) == $GUI_CHECKED Then LeecherRole()
+	If GUICtrlRead($Farmer) == $GUI_CHECKED Then FarmerRole()
+	If GUICtrlRead($ZKey) == $GUI_CHECKED Then TradeKey()
 WEnd
 #EndRegion Loops
 
@@ -113,7 +113,6 @@ Func GUIButtonHandler()
 	  $BOT_RUNNING = True
    Else
 	  Out("Initializing...")
-	  Out("Current points: " & GetCodexTitle())
 	  Local $CharName = GUICtrlRead($CharInput)
 	  If $CharName == "" Then
 		 If Initialize(ProcessExists("gw.exe"), True, True) = False Then
@@ -194,6 +193,7 @@ EndFunc
 
 Func Farm()
 	Out("Waiting Win")
+	Out("Current points: " & GetCodexTitle())
 	While GetMapLoading() == 1 And GetMapId() == $CODEX_ARENA
 		DefineMap()
 		CheckIsTeamWiped()
