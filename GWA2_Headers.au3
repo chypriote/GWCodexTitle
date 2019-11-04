@@ -32,9 +32,9 @@ Global Const $HEADER_HEROES_KICK = 0x24	;Kicks ALL heroes from party
 ;=PARTY= not touched
 Global Const $HEADER_PARTY_PLACE_FLAG = 0x1F	;Sets the party position flag, all party-npcs runs to position
 Global Const $HEADER_PARTY_CLEAR_FLAG = 0x1F	;Clears the party position flag
-Global Const $HEADER_HENCHMAN_ADD = 0xA5	;Adds henchman to party
+Global Const $HEADER_HENCHMAN_ADD = 0xA6	;Adds henchman to party
 Global Const $HEADER_PARTY_LEAVE = 0xA8	;Leaves the party
-Global Const $HEADER_HENCHMAN_KICK = 0xAD	;Kicks a henchman from party
+Global Const $HEADER_HENCHMAN_KICK = 0xAF	;Kicks a henchman from party
 Global Const $HEADER_INVITE_TARGET = 0xA6	;Invite target player to party
 Global Const $HEADER_INVITE_CANCEL = 0xA3	;Cancel invitation of player
 Global Const $HEADER_INVITE_ACCEPT = 0xA2	;Accept invitation to party
