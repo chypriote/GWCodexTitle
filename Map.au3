@@ -188,19 +188,3 @@ Func GotoCenter()
             MoveTo(5598, -4091)
     EndSwitch
 EndFunc
-
- Func KillEnemy()
-	If GetDistance(GetNearestEnemyToAgent(), -2) < 1250 Then
-		For $i = 1 to 7
-			If GetIsDead() Then ExitLoop
-			If GetMapLoading() == 0 Then ExitLoop
-			$agent = GetNearestEnemyToAgent()
-			Out("Kill Enemies")
-			Attack($agent)
-			RndSleep(300)
-			SkillUseRange($i, $agent)
-			RndSleep(300)
-			ChangeTarget($agent)
-		Next
-	EndIf
-EndFunc ;KillEnemy

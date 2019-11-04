@@ -5413,4 +5413,11 @@ Func _PurgeHook()
 	; ToggleRendering()
 EndFunc   ;==>_PurgeHook
 
+;It returns the Delay the Mission-Start-Timer shows you at first sight in ms (same info you receive with the packet). 
+;Just call the Func right after you started a mission. The return-value can be used to sleep for that ammount of milliseconds / whatever.
+;The Function will always return 0 if there is no Mission-Start-Delay.
+Func GetMissionStartDelay()
+	Local $lOffset = [0, 0x18, 0x44, 0x9C, 0]
+	Return MemoryReadPtr($mBasePointer, $lOffset)[1]
+EndFunc
 #EndRegion Other Functions
