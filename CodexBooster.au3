@@ -7,7 +7,7 @@
 #include <Misc.au3>
 #include <EditConstants.au3>
 #include <GuiEdit.au3>
-#include <../GWA2.au3>
+#include "../GWA2.au3"
 #NoTrayIcon
 
 #Region Constants
